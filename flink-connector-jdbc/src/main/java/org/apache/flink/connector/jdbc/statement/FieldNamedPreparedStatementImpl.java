@@ -220,7 +220,9 @@ public class FieldNamedPreparedStatementImpl implements FieldNamedPreparedStatem
             char c = sql.charAt(i);
             if (':' == c) {
                 int j = i + 1;
-                while (j < length && Character.isJavaIdentifierPart(sql.charAt(j))) {
+                while (j < length
+                        && (Character.isJavaIdentifierPart(sql.charAt(j))
+                                || '-' == sql.charAt(j))) {
                     j++;
                 }
                 String parameterName = sql.substring(i + 1, j);

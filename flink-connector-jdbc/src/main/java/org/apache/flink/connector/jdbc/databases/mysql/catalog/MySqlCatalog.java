@@ -168,4 +168,12 @@ public class MySqlCatalog extends AbstractJdbcCatalog {
     protected String getSchemaTableName(ObjectPath tablePath) {
         return tablePath.getObjectName();
     }
+
+    @Override
+    protected ResultSetMetaData getResultSetMetaData(ObjectPath tablePath, Connection conn)
+            throws SQLException {
+        return conn.prepareStatement(
+                        String.format("SELECT * FROM `%s`;", getSchemaTableName(tablePath)))
+                .getMetaData();
+    }
 }

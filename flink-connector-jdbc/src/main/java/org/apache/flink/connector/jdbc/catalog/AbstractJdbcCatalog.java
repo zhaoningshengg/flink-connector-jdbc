@@ -257,11 +257,7 @@ public abstract class AbstractJdbcCatalog extends AbstractCatalog {
                             getSchemaName(tablePath),
                             getTableName(tablePath));
 
-            PreparedStatement ps =
-                    conn.prepareStatement(
-                            String.format("SELECT * FROM %s;", getSchemaTableName(tablePath)));
-
-            ResultSetMetaData resultSetMetaData = ps.getMetaData();
+            ResultSetMetaData resultSetMetaData = getResultSetMetaData(tablePath, conn);
 
             String[] columnNames = new String[resultSetMetaData.getColumnCount()];
             DataType[] types = new DataType[resultSetMetaData.getColumnCount()];
@@ -290,6 +286,15 @@ public abstract class AbstractJdbcCatalog extends AbstractCatalog {
             throw new CatalogException(
                     String.format("Failed getting table %s", tablePath.getFullName()), e);
         }
+    }
+
+    protected ResultSetMetaData getResultSetMetaData(ObjectPath tablePath, Connection conn)
+            throws SQLException {
+        PreparedStatement ps =
+                conn.prepareStatement(
+                        String.format("SELECT * FROM %s;", getSchemaTableName(tablePath)));
+        ResultSetMetaData resultSetMetaData = ps.getMetaData();
+        return resultSetMetaData;
     }
 
     @Override
